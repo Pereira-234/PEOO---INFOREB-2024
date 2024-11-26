@@ -2,14 +2,50 @@ import json
 
 # Modelo
 class Servico:
-  def __init__(self, id, descricao, valor, duracao):
-    self.id = id
-    self.descricao = descricao
-    self.valor = valor
-    self.duracao = duracao
-  def __str__(self):
-    return f"{self.id} - {self.descricao} - R$ {self.valor:.2f} - {self.duracao} min"
+    def _init_(self):
+        self.__id = 0
+        self.__descricao = ""
+        self.__valor = 0.0
+        self.__duracao = 0
 
+    # Métodos SET com validações
+    def set_id(self, id):
+        self.__id = id
+
+    def set_descricao(self, descricao):
+        if descricao.strip():
+            self.__descricao = descricao
+        else:
+            raise ValueError("A descrição não pode ser vazia")
+
+    def set_valor(self, valor):
+        if valor >= 0:
+            self.__valor = valor
+        else:
+            raise ValueError("O valor não pode ser negativo")
+
+    def set_duracao(self, duracao):
+        if duracao >= 0:
+            self.__duracao = duracao
+        else:
+            raise ValueError("A duração não pode ser negativa")
+
+    # Métodos GET
+    def get_id(self):
+        return self.__id
+
+    def get_descricao(self):
+        return self.__descricao
+
+    def get_valor(self):
+        return self.__valor
+
+    def get_duracao(self):
+        return self.__duracao
+
+    def _str_(self):
+        return f"{self._id} - {self.descricao} - R$ {self.valor:.2f} - {self._duracao} min"
+      
 # Persistência
 class Servicos:
   objetos = []    # atributo estático
