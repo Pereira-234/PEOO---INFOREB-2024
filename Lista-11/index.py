@@ -6,6 +6,8 @@ from templates.abriragendaUI import AbrirAgendaUI
 from templates.abrircontaUI import AbrirContaUI
 from templates.listarhorarioUI import ListarHorarioUI
 from templates.loginUI import LoginUI
+from templates.vizualizaragendaprofissionalUI import VisualizarAgendaProfissionalUI
+from templates.alterardadosUI import AlterarDadosUI
 from views import View
 
 import streamlit as st
@@ -25,8 +27,16 @@ class IndexUI:
         if op == "Abrir Agenda do Dia": AbrirAgendaUI.main()
 
     def menu_cliente():
-        op = st.sidebar.selectbox("Menu", ["Horários Disponíveis"])
+        op = st.sidebar.selectbox("Menu", ["Horários Disponíveis", "Alterar Meus Dados"])
         if op == "Horários Disponíveis": ListarHorarioUI.main()
+        if op == "Alterar Meus Dados": AlterarDadosUI.main()
+
+    def menu_profissional():
+        op = st.sidebar.selectbox("Menu", ["Minha Agenda", "Sair"])
+        if op == "Minha Agenda":
+            VisualizarAgendaProfissionalUI.main()
+        if op == "Sair":
+            IndexUI.sair_do_sistema()
 
     def sair_do_sistema():
         if st.sidebar.button("Sair"):
@@ -39,6 +49,9 @@ class IndexUI:
             # usuário não está logado
             IndexUI.menu_visitante()   
         else:
+            admin = st.session_state["cliente_nome"] == "admin"
+            if admin: IndexUI.menu_admin()
+            else: IndexUI.menu_cliente()
             # usuário está logado, verifica se é o admin
             admin = st.session_state["cliente_nome"] == "admin"
             # mensagen de bem-vindo
@@ -48,6 +61,14 @@ class IndexUI:
             else: IndexUI.menu_cliente()
             # controle de sair do sistema
             IndexUI.sair_do_sistema() 
+            if "cliente_id" in st.session_state:
+                is_profissional = st.session_state.get("is_profissional", False)
+                if is_profissional:
+                    IndexUI.menu_profissional()
+                else:
+                    admin = st.session_state["cliente_nome"] == "admin"
+                    if admin: IndexUI.menu_admin()
+                    else: IndexUI.menu_cliente()
     
     def main():
         # verifica a existe o usuário admin
